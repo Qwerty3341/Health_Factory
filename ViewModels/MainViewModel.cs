@@ -44,6 +44,7 @@ namespace Health_Factory.ViewModels
                         Edad = item.Edad,
                         Estatura = item.Estatura,
                         Peso = item.Peso,
+                        Sexo = item.Sexo,
                         NivelDeActividadFisica = item.NivelDeActividadFisica
                     });
                 }
@@ -67,6 +68,7 @@ namespace Health_Factory.ViewModels
                 encontrado.Edad = usuarioDto.Edad;
                 encontrado.Estatura = usuarioDto.Estatura;
                 encontrado.Peso = usuarioDto.Peso;
+                encontrado.Sexo = usuarioDto.Sexo;
                 encontrado.NivelDeActividadFisica = usuarioDto.NivelDeActividadFisica;
             }
         }
@@ -81,9 +83,10 @@ namespace Health_Factory.ViewModels
         [RelayCommand]
         private async Task Editar(UsuarioDTO usuarioDto)
         {
-            var uri = $"{nameof(UsuarioPage)}? id={usuarioDto.IdUsuario}";
+            var uri = $"{nameof(UsuarioPage)}?id={usuarioDto.IdUsuario}";
             await Shell.Current.GoToAsync(uri);
         }
+
 
         [RelayCommand]
         private async Task Eliminar(UsuarioDTO usuarioDto)

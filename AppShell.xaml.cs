@@ -7,7 +7,6 @@ namespace Health_Factory
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(UsuarioPage), typeof(UsuarioPage));
         }
     }
 }

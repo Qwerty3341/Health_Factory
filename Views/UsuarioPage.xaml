@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Health_Factory.Views.UsuarioPage"
@@ -38,6 +37,6 @@
                 Title="Seleccione el nivel de actividad física" 
                 Margin="0,0,0,10"/>
 
-        <Button Text="Registrar" Command="{Binding GuardarCommand}" Background="Green"/>
+        <Button Text="Guardar" Command="{Binding GuardarCommand}" Background="Green"/>
     </VerticalStackLayout>
 </ContentPage>

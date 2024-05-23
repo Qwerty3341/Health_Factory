@@ -18,21 +18,19 @@ namespace Health_Factory
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            //Code
+            // Crear contexto de la base de datos
+            var dbContext = new UsuarioDbContext();
+            dbContext.Database.EnsureCreated();
+            dbContext.Dispose();
 
-            var dbContext = new UsuarioDbContext(); //Crear contexto de la base de datos
-            dbContext.Database.EnsureCreated(); // Asegurarse de que sea creada
-            dbContext.Dispose();//Liberar base de datos
-
-
-            builder.Services.AddDbContext<UsuarioDbContext>();//hacer instancia de base de datos
-
+            // Registrar servicios
+            builder.Services.AddDbContext<UsuarioDbContext>();
             builder.Services.AddTransient<UsuarioPage>();
             builder.Services.AddTransient<UsuarioViewModel>();
-
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<MainViewModel>();
 
+            // Registrar rutas
             Routing.RegisterRoute(nameof(UsuarioPage), typeof(UsuarioPage));
 
 #if DEBUG

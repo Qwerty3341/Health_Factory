@@ -7,12 +7,7 @@ namespace Health_Factory.Utilidades
         public static string DevolverRuta(string nombreBaseDatos)
         {
             string rutaBaseDatos = string.Empty;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                string directorioDatos = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                rutaBaseDatos = Path.Combine(directorioDatos, nombreBaseDatos);
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.Android)
+            if (DeviceInfo.Platform == DevicePlatform.Android)
             {
                 rutaBaseDatos = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 rutaBaseDatos = Path.Combine(rutaBaseDatos, nombreBaseDatos);

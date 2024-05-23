@@ -46,14 +46,14 @@ namespace Health_Factory.ViewModels
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("id"))
+            if (query.TryGetValue("id", out var idValue) && int.TryParse(idValue.ToString(), out var id))
             {
-                var id = int.Parse(query["id"].ToString());
                 IdUsuario = id;
 
                 if (IdUsuario == 0)
                 {
                     TituloPagina = "Nuevo usuario";
+                    UsuarioDto = new UsuarioDTO(); // Inicializar nuevo usuario
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace Health_Factory.ViewModels
             }
             else
             {
-                Console.WriteLine("Error");
+                Console.WriteLine("Error: La clave 'id' no está presente en el diccionario o no es un entero válido.");
             }
         }
 
