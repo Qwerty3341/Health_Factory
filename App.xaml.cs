@@ -9,7 +9,6 @@ namespace Health_Factory
             InitializeComponent();
 
             MainPage = new AppShell();
-            Shell.Current.GoToAsync(nameof(InicioPage));
 
         }
     }

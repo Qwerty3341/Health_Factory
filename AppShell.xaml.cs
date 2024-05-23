@@ -8,8 +8,6 @@ namespace Health_Factory
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(UsuarioPage), typeof(UsuarioPage));
-            Routing.RegisterRoute(nameof(IniciarSesionPage), typeof(IniciarSesionPage));
-            Routing.RegisterRoute(nameof(InicioPage), typeof(InicioPage));
         }
     }
 }
