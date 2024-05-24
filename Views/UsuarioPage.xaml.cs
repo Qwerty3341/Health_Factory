@@ -4,7 +4,12 @@ namespace Health_Factory.Views;
 
 public partial class UsuarioPage : ContentPage
 {
-	public UsuarioPage(UsuarioViewModel viewModel)
+    //public UsuarioPage()
+    //{
+    //    InitializeComponent();
+    //}
+
+    public UsuarioPage(UsuarioViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;

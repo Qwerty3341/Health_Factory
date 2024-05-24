@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Health_Factory.Views.InicioPage"
+             Title="Health Factory">
+
+    <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <Label Text="Health Factory"
+               FontSize="Large"
+               HorizontalOptions="Center" />
+
+        <Entry Placeholder="Nombre"
+               x:Name="NombreEntry"
+               WidthRequest="200"
+               HorizontalOptions="Center" />
+
+        <Entry Placeholder="Apellido"
+               x:Name="ApellidoEntry"
+               WidthRequest="200"
+               HorizontalOptions="Center" />
+
+        <Button Text="Acceder"
+                WidthRequest="200"
+                HorizontalOptions="Center"
+                Clicked="OnAccederClicked" />
+
+        <Label Text="No tienes cuenta? Haz click aqui"
+               FontSize="Small"
+               HorizontalOptions="Center"
+               TextDecorations="Underline"
+               TextColor="Blue">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding IrAUsuarioCommand}"/>
+            </Label.GestureRecognizers>
+        </Label>
+        
+    </VerticalStackLayout>
+</ContentPage>

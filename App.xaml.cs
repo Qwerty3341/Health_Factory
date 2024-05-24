@@ -11,5 +11,11 @@ namespace Health_Factory
             MainPage = new AppShell();
 
         }
+
+        protected async Task OnStar()
+        {
+            await Shell.Current.GoToAsync(nameof(InicioPage));
+            base.OnStart();
+        }
     }
 }

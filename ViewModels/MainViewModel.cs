@@ -80,6 +80,7 @@ namespace Health_Factory.ViewModels
             await Shell.Current.GoToAsync(uri);
         }
 
+
         [RelayCommand]
         private async Task Editar(UsuarioDTO usuarioDto)
         {
@@ -99,6 +100,12 @@ namespace Health_Factory.ViewModels
                 await _dbContext.SaveChangesAsync();
                 ListaUsuario.Remove(usuarioDto);
             }
+        }
+
+        [RelayCommand]
+        private async Task IrAInicio()
+        {
+            await Shell.Current.GoToAsync("//InicioPage");
         }
     }
 }

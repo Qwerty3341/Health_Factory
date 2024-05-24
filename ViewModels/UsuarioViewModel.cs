@@ -1,13 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Health_Factory.DataAccess;
 using Health_Factory.DTOs;
-using Health_Factory.Utilidades;
 using Health_Factory.Modelos;
-using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Health_Factory.Utilidades;
 using Health_Factory.Utilidades.Enumerados;
+using System.Threading.Tasks;
+using System;
 
 namespace Health_Factory.ViewModels
 {
@@ -44,7 +47,7 @@ namespace Health_Factory.ViewModels
             };
         }
 
-        public async void ApplyQueryAttributes(IDictionary<string, object> query)
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("id", out var idValue) && int.TryParse(idValue.ToString(), out var id))
             {
@@ -59,23 +62,7 @@ namespace Health_Factory.ViewModels
                 {
                     TituloPagina = "Editar usuario";
                     LoadingEsVisible = true;
-                    await Task.Run(async () =>
-                    {
-                        var encontrado = await _dbContext.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == IdUsuario);
-                        UsuarioDto.IdUsuario = encontrado.IdUsuario;
-                        UsuarioDto.Nombre = encontrado.Nombre;
-                        UsuarioDto.Apellido = encontrado.Apellido;
-                        UsuarioDto.Edad = encontrado.Edad;
-                        UsuarioDto.Estatura = encontrado.Estatura;
-                        UsuarioDto.Peso = encontrado.Peso;
-                        UsuarioDto.NivelDeActividadFisica = encontrado.NivelDeActividadFisica;
-                        UsuarioDto.Sexo = encontrado.Sexo;
-
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            LoadingEsVisible = false;
-                        });
-                    });
+                    _ = LoadUsuarioAsync(IdUsuario);
                 }
             }
             else
@@ -84,60 +71,94 @@ namespace Health_Factory.ViewModels
             }
         }
 
+        private async Task LoadUsuarioAsync(int idUsuario)
+        {
+            var encontrado = await _dbContext.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario);
+            if (encontrado != null)
+            {
+                UsuarioDto.IdUsuario = encontrado.IdUsuario;
+                UsuarioDto.Nombre = encontrado.Nombre;
+                UsuarioDto.Apellido = encontrado.Apellido;
+                UsuarioDto.Edad = encontrado.Edad;
+                UsuarioDto.Estatura = encontrado.Estatura;
+                UsuarioDto.Peso = encontrado.Peso;
+                UsuarioDto.NivelDeActividadFisica = encontrado.NivelDeActividadFisica;
+                UsuarioDto.Sexo = encontrado.Sexo;
+            }
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingEsVisible = false;
+            });
+        }
+
         [RelayCommand]
         private async Task Guardar()
         {
             LoadingEsVisible = true;
             UsuarioMensaje mensaje = new UsuarioMensaje();
+            bool esNuevoUsuario = (IdUsuario == 0);
+
             await Task.Run(async () =>
             {
-                if (IdUsuario == 0)
+                try
                 {
-                    var tbUsuario = new Usuario
+                    if (esNuevoUsuario)
                     {
-                        Nombre = UsuarioDto.Nombre,
-                        Apellido = UsuarioDto.Apellido,
-                        Edad = UsuarioDto.Edad,
-                        Estatura = UsuarioDto.Estatura,
-                        Peso = UsuarioDto.Peso,
-                        NivelDeActividadFisica = UsuarioDto.NivelDeActividadFisica,
-                        Sexo = UsuarioDto.Sexo
-                    };
-                    _dbContext.Usuarios.Add(tbUsuario);
-                    await _dbContext.SaveChangesAsync();
-                    UsuarioDto.IdUsuario = tbUsuario.IdUsuario;
-                    mensaje = new UsuarioMensaje()
+                        var tbUsuario = new Usuario
+                        {
+                            Nombre = UsuarioDto.Nombre,
+                            Apellido = UsuarioDto.Apellido,
+                            Edad = UsuarioDto.Edad,
+                            Estatura = UsuarioDto.Estatura,
+                            Peso = UsuarioDto.Peso,
+                            NivelDeActividadFisica = UsuarioDto.NivelDeActividadFisica,
+                            Sexo = UsuarioDto.Sexo
+                        };
+                        _dbContext.Usuarios.Add(tbUsuario);
+                        await _dbContext.SaveChangesAsync();
+                        UsuarioDto.IdUsuario = tbUsuario.IdUsuario;
+                        mensaje = new UsuarioMensaje()
+                        {
+                            EsCrear = true,
+                            UsuarioDto = UsuarioDto
+                        };
+                    }
+                    else
                     {
-                        EsCrear = true,
-                        UsuarioDto = UsuarioDto
-                    };
+                        var encontrado = await _dbContext.Usuarios.FirstAsync(u => u.IdUsuario == IdUsuario);
+                        encontrado.Nombre = UsuarioDto.Nombre;
+                        encontrado.Apellido = UsuarioDto.Apellido;
+                        encontrado.Edad = UsuarioDto.Edad;
+                        encontrado.Estatura = UsuarioDto.Estatura;
+                        encontrado.Peso = UsuarioDto.Peso;
+                        encontrado.NivelDeActividadFisica = UsuarioDto.NivelDeActividadFisica;
+                        encontrado.Sexo = UsuarioDto.Sexo;
+
+                        await _dbContext.SaveChangesAsync();
+
+                        mensaje = new UsuarioMensaje()
+                        {
+                            EsCrear = false,
+                            UsuarioDto = UsuarioDto
+                        };
+                    }
+
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        LoadingEsVisible = false;
+                        WeakReferenceMessenger.Default.Send(new UsuarioMensajeria(mensaje));
+                        Console.WriteLine("Navegando de vuelta");
+                        await Shell.Current.GoToAsync(".."); // Navega de vuelta a la página anterior
+                    });
                 }
-                else
+                catch (Exception ex)
                 {
-                    var encontrado = await _dbContext.Usuarios.FirstAsync(u => u.IdUsuario == IdUsuario);
-                    encontrado.Nombre = UsuarioDto.Nombre;
-                    encontrado.Apellido = UsuarioDto.Apellido;
-                    encontrado.Edad = UsuarioDto.Edad;
-                    encontrado.Estatura = UsuarioDto.Estatura;
-                    encontrado.Peso = UsuarioDto.Peso;
-                    encontrado.NivelDeActividadFisica = UsuarioDto.NivelDeActividadFisica;
-                    encontrado.Sexo = UsuarioDto.Sexo;
-
-                    await _dbContext.SaveChangesAsync();
-
-                    mensaje = new UsuarioMensaje()
+                    Console.WriteLine($"Error al guardar el usuario: {ex.Message}");
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        EsCrear = false,
-                        UsuarioDto = UsuarioDto
-                    };
+                        LoadingEsVisible = false;
+                    });
                 }
-
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    LoadingEsVisible = false;
-                    WeakReferenceMessenger.Default.Send(new UsuarioMensajeria(mensaje));
-                    await Shell.Current.Navigation.PopAsync();
-                });
             });
         }
     }

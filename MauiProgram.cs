@@ -25,10 +25,17 @@ namespace Health_Factory
 
             // Registrar servicios
             builder.Services.AddDbContext<UsuarioDbContext>();
-            builder.Services.AddTransient<UsuarioPage>();
             builder.Services.AddTransient<UsuarioViewModel>();
-            builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<MainViewModel>();
+            builder.Services.AddTransient<InicioPageViewModel>();
+
+            builder.Services.AddTransient<UsuarioPage>(sp =>
+            {
+                var viewModel = sp.GetRequiredService<UsuarioViewModel>();
+                return new UsuarioPage(viewModel);
+            });
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<InicioPage>();
 
             // Registrar rutas
             Routing.RegisterRoute(nameof(UsuarioPage), typeof(UsuarioPage));
